@@ -3,7 +3,6 @@
 """
 Python modbus sniffer implementation
 ---------------------------------------------------------------------------
-
 The following is an modbus RTU sniffer program,
 made without the use of modbus specific library.
 """
@@ -15,6 +14,7 @@ import sys
 import getopt
 import logging
 import serial
+from logging.handlers import TimedRotatingFileHandler
 
 # --------------------------------------------------------------------------- #
 # configure the logging system
@@ -35,10 +35,15 @@ class myFormatter(logging.Formatter):
         return super().format(record)
 
 log = logging.getLogger()
+log.setLevel(logging.INFO)
+
 handler = logging.StreamHandler()
 handler.setFormatter(myFormatter())
-log.setLevel(logging.INFO)
 log.addHandler(handler)
+
+fileHandler = TimedRotatingFileHandler("logs/SnifferLog", when="H", backupCount=20)
+fileHandler.setFormatter(myFormatter())
+log.addHandler(fileHandler)
 
 # --------------------------------------------------------------------------- #
 # declare the sniffer
